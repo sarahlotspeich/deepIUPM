@@ -70,7 +70,7 @@ iupMLE <- function(data, maxit = 1E4, lb = 1E-6, ub = Inf) {
   return(list("mle" = Lambda_hat,
               "bc_mle" = Lambda_hat_bc,
               "cov" = cov,
-              "cov_bc" = matrix(NA, nrow = n, ncol = n),
+              "cov_bc" = matrix(NA, nrow = n, ncol = n)
               )
          )
 }
