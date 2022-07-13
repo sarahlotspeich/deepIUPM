@@ -20,10 +20,10 @@ simulate_assay <- function(M, n, lambda, q, remove_undetected = TRUE) {
   MP <- sum(colSums(data_mat) >= 1)
 
   # Calculate the number of p24 positive wells for VOA-USDA
-  if (q == 0) {
+  if (q == 1) {
     m <- MP
   } else {
-    m <- ceiling((1 - q) * MP)
+    m <- ceiling(q * MP)
   }
 
   # Randomly select columns to make missing
