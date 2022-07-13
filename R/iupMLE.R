@@ -7,8 +7,8 @@
 #' @return A named list with the following slots:
 #' \item{mle}{MLE of the IUPM}
 #' \item{bc_mle}{Bias-corrected MLE of the IUPM}
-#' \item{cov}{Covariance matrix for the MLE of the IUPM}
-#' \item{cov_bc}{Covariance matrix for the bias-corrected MLE of the IUPM}
+#' \item{se}{Standard error for the MLE of the IUPM}
+#' \item{se_bc}{Standard error for the bias-corrected MLE of the IUPM}
 #' @export
 #'
 iupMLE <- function(data, maxit = 1E4, lb = 1E-6, ub = Inf) {
@@ -38,39 +38,32 @@ iupMLE <- function(data, maxit = 1E4, lb = 1E-6, ub = Inf) {
   lambda_hat = optimization$par
   Lambda_hat = sum(lambda_hat) # MLE of the IUPM
   cov = solve(optimization$hessian) #Variance of IUPM
+  se = sqrt(diag(cov))
 
-  # Bias correction
-  ## Calculate Fisher information
-  I = fisher(
-    lambda = lambda_hat,
-    M = M,
-    q = q
-  )
-  ## Standard error (from inverting Fisher's information)
-  V = 1 / I
-  SE = sqrt(sum(V))
-  ## Derivative of the Fisher information
-  dI = deriv_fisher(
-    lambda = lambda_hat,
-    M = M,
-    q = q
-  )
-  ## Expectation of third Derivative
-  expd3 = exp_third_deriv(
-    lambda = lambda_hat,
-    M = M,
-    q = q
-  )
-  ## Bias correction
-  BC = - (2 * dI + expd3) / (2 * I ^ 2)
+  # Bias corrected MLE
+  lambda_hat_bc = BC(lambda = lambda_hat,
+                     M = M,
+                     q = q)
+  Lambda_hat_bc = sum(lambda_hat_bc)
 
-  ## Bias corrected MLE
-  Lambda_hat_bc = sum(lambda_hat - BC)
+  ## Variance for BC-MLE
+  nabla = grad_bc(lambda = lambda_hat,
+                  M = M,
+                  q = q)
+
+  var_bc = vector()
+  for (i in 1:n) {
+    nabla_i = matrix(data = nabla[, i],
+                     ncol = 1)
+    var_bc = append(var_bc,
+                    t(nabla_i) %*% cov %*% nabla_i)
+  }
+  se_bc = sqrt(var_bc)
 
   return(list("mle" = Lambda_hat,
               "bc_mle" = Lambda_hat_bc,
-              "cov" = cov,
-              "cov_bc" = matrix(NA, nrow = n, ncol = n)
+              "se" = sqrt(sum(se ^ 2)),
+              "se_bc" = sqrt(sum(se_bc ^ 2))
               )
          )
 }

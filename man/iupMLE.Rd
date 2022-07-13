@@ -19,8 +19,8 @@ iupMLE(data, maxit = 10000, lb = 1e-06, ub = Inf)
 A named list with the following slots:
 \item{mle}{MLE of the IUPM}
 \item{bc_mle}{Bias-corrected MLE of the IUPM}
-\item{cov}{Covariance matrix for the MLE of the IUPM}
-\item{cov_bc}{Covariance matrix for the bias-corrected MLE of the IUPM}
+\item{se}{Standard error for the MLE of the IUPM}
+\item{se_bc}{Standard error for the bias-corrected MLE of the IUPM}
 }
 \description{
 Maximum likelihood estimator for infectious units per million (IUPM) to incorporate partial deep sequencing information
