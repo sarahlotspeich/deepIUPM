@@ -12,7 +12,7 @@
 #' @export
 #'
 iupMLE <- function(data, maxit = 1E4, lb = 1E-6, ub = Inf) {
-# Helpful constants
+  # Helpful constants
   M = ncol(assay) # number of wells (total)
   n = nrow(data) # number of DVL detected
   MN = sum(colSums(assay) == 0, na.rm = TRUE) # number of wells (p24-negative)
